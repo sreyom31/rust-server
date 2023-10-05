@@ -8,6 +8,7 @@ use sqlx::PgPool;
 use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
 use crate::configuration::DatabaseSettings;
+use crate::routes::confirm;
 
 pub struct Application {
     port: u16,
@@ -66,6 +67,7 @@ pub fn run(
         App::new()
             .wrap(TracingLogger::default())
             .route("/health_check", web::get().to(health_check))
+            .route("/subscriptions/confirm", web::get().to(confirm))
             .route("/subscriptions", web::post().to(subscribe))
             .app_data(db_pool.clone())
             .app_data(email_client.clone())
