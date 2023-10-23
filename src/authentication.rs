@@ -34,6 +34,7 @@ pub(crate) async fn validate_credentials(credentials: Credentials, pool: &PgPool
         user_id = Some(stored_user_id);
         expected_password_hash = stored_password_hash;
     }
+
     spawn_blocking_with_tracing(move || {
         verify_password_hash(expected_password_hash, credentials.password)
     })
