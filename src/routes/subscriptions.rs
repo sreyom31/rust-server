@@ -51,12 +51,12 @@ impl ResponseError for SubscribeError {
 }
 
 #[tracing::instrument(
-    name = "Adding a new subscriber",
-    skip(form, pool, email_client, base_url),
-    fields(
-        subscriber_email = %form.email,
-        subscriber_name = %form.name
-    )
+name = "Adding a new subscriber",
+skip(form, pool, email_client, base_url),
+fields(
+subscriber_email = %form.email,
+subscriber_name = %form.name
+)
 )]
 pub async fn subscribe(
     form: web::Form<FormData>,
@@ -86,8 +86,8 @@ pub async fn subscribe(
         &base_url.0,
         &subscription_token,
     )
-    .await
-    .context("Failed to send a confirmation email.")?;
+        .await
+        .context("Failed to send a confirmation email.")?;
     Ok(HttpResponse::Ok().finish())
 }
 
@@ -100,8 +100,8 @@ fn generate_subscription_token() -> String {
 }
 
 #[tracing::instrument(
-    name = "Send a confirmation email to a new subscriber",
-    skip(email_client, new_subscriber, base_url, subscription_token)
+name = "Send a confirmation email to a new subscriber",
+skip(email_client, new_subscriber, base_url, subscription_token)
 )]
 pub async fn send_confirmation_email(
     email_client: &EmailClient,
@@ -122,13 +122,13 @@ pub async fn send_confirmation_email(
         confirmation_link
     );
     email_client
-        .send_email(new_subscriber.email, "Welcome!", &html_body, &plain_body)
+        .send_email(&new_subscriber.email, "Welcome!", &html_body, &plain_body)
         .await
 }
 
 #[tracing::instrument(
-    name = "Saving new subscriber details in the database",
-    skip(new_subscriber, transaction)
+name = "Saving new subscriber details in the database",
+skip(new_subscriber, transaction)
 )]
 pub async fn insert_subscriber(
     transaction: &mut Transaction<'_, Postgres>,
@@ -150,8 +150,8 @@ pub async fn insert_subscriber(
 }
 
 #[tracing::instrument(
-    name = "Store subscription token in the database",
-    skip(subscription_token, transaction)
+name = "Store subscription token in the database",
+skip(subscription_token, transaction)
 )]
 pub async fn store_token(
     transaction: &mut Transaction<'_, Postgres>,
